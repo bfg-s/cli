@@ -1,0 +1,11 @@
+export class {class_name} {
+
+  get signature (): string {
+
+    return "{command_name}{parameters} {description}";
+  }
+
+  handle (): void {
+
+  }
+}

@@ -1,0 +1,11 @@
+module.exports = class {class_name} {
+
+  get signature () {
+
+    return "{command_name}{parameters} {description}";
+  }
+
+  handle () {
+
+  }
+}

@@ -1,0 +1,10 @@
+module.exports = class {class_name} {
+
+  boot (app) {
+
+  }
+
+  register (app) {
+
+  }
+}

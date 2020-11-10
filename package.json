@@ -1,0 +1,18 @@
+{
+  "name": "bfg-cli",
+  "version": "1.0.0",
+  "main": "./cli.js",
+  "repository": "https://github.com/bfg-s/bfg-mix",
+  "author": "bfg",
+  "license": "MIT",
+  "bin": {
+    "bfg": "./cli.js"
+  },
+  "dependencies": {
+    "cli-table3": "^0.6.0",
+    "colors": "^1.4.0",
+    "loading-cli": "^1.1.0",
+    "yargs": "^15.1.0",
+    "bfg-js": "^1.0.0"
+  }
+}

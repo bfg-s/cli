@@ -1,0 +1,10 @@
+export class {class_name} {
+
+  boot (app: ApplicationContainer): void {
+
+  }
+
+  register (app: ApplicationContainer): void {
+
+  }
+}

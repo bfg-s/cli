@@ -1,0 +1,6 @@
+module.exports = class {class_name} {
+
+  handle (app) {
+
+  }
+}
