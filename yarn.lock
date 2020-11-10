@@ -14,6 +14,11 @@ ansi-styles@^4.0.0:
   dependencies:
     color-convert "^2.0.1"
 
+bfg-js@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/bfg-js/-/bfg-js-1.0.0.tgz#b3e0a3b6afdc5717a136e27caffb5b1339e5e96a"
+  integrity sha512-csJmW0xnX0mcotz1Y31lMJWNHaVMkRz8J6jRkgEtEcsOaS5pQc7XYf8SG/Ec28xfp6rGN76qAUjfufyLhyWySw==
+
 camelcase@^5.0.0:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"

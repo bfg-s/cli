@@ -1,4 +1,4 @@
-export class {class_name} {
+export class {class_name} extends Command {
 
   get signature (): string {
 

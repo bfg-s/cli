@@ -1,4 +1,4 @@
-module.exports = class {class_name} {
+module.exports = class {class_name} extends Command {
 
   get signature () {
 

@@ -48,47 +48,49 @@ module.exports = {
     parse_params (command) {
         if (!('params' in command)) return command;
         const args = app.args;
-        command.params = String(command.params)
-            .replace(/\}\{/g, '} {')
-            .split(/}\s{/)
-            .map((param) => {
-                param = `{${app.str.trim(param.trim(), '{}')}}`;
-                if (/^\{([a-zA-Z0-9\_\|]+)(\?|)\s?(.*)\}$/.test(param)) {
-                    let pars = /^\{([a-zA-Z0-9\_\|]+)(\?|)\s?(.*)\}$/.exec(param);
-                    return {
-                        arg: true,
-                        name: pars[1],
-                        required: pars[2]!=='?',
-                        description: pars[3]
-                    }
-                } else if (/^\{[\-]{1,2}([a-zA-Z0-9\_\|\-]+)\s*(\=|)\s*(\?|)?\s*(.*)\}$/.test(param)) {
-                    let pars = /^\{[\-]{1,2}([a-zA-Z0-9\_\|\-]+)\s*(\=|)\s*(\?|)?\s*(.*)\}$/.exec(param);
-                    let name = null;
-                    let names = !!pars[1] ? pars[1].split('|').filter((i) => {
-                        if (/^\-\-.*/.test(i)) {
-                            name = i.replace(/\-/g, '').trim();
-                            return false;
+        if (command.params !== undefined) {
+            command.params = String(command.params)
+                .replace(/\}\{/g, '} {')
+                .split(/}\s{/)
+                .map((param) => {
+                    param = `{${app.str.trim(param.trim(), '{}')}}`;
+                    if (/^\{([a-zA-Z0-9\_\|]+)(\?|)\s?(.*)\}$/.test(param)) {
+                        let pars = /^\{([a-zA-Z0-9\_\|]+)(\?|)\s?(.*)\}$/.exec(param);
+                        return {
+                            arg: true,
+                            name: pars[1],
+                            required: pars[2] !== '?',
+                            description: pars[3]
                         }
-                        return true;
-                    }).map((i, k) => {
-                        return i.replace(/\-/g, '').trim();
-                    }) : [null];
-                    if (!name) {
-                        name = names[0];
-                        delete names[0];
+                    } else if (/^\{[\-]{1,2}([a-zA-Z0-9\_\|\-]+)\s*(\=|)\s*(\?|)?\s*(.*)\}$/.test(param)) {
+                        let pars = /^\{[\-]{1,2}([a-zA-Z0-9\_\|\-]+)\s*(\=|)\s*(\?|)?\s*(.*)\}$/.exec(param);
+                        let name = null;
+                        let names = !!pars[1] ? pars[1].split('|').filter((i) => {
+                            if (/^\-\-.*/.test(i)) {
+                                name = i.replace(/\-/g, '').trim();
+                                return false;
+                            }
+                            return true;
+                        }).map((i, k) => {
+                            return i.replace(/\-/g, '').trim();
+                        }) : [null];
+                        if (!name) {
+                            name = names[0];
+                            delete names[0];
+                        }
+                        return {
+                            arg: false,
+                            value: pars[2] === '=',
+                            name: name,
+                            aliases: names.join('[==--==]').split('[==--==]'),
+                            required: pars[3] !== '?',
+                            description: pars[4]
+                        }
                     }
-                    return {
-                        arg: false,
-                        value: pars[2]==='=',
-                        name: name,
-                        aliases: names.join('[==--==]').split('[==--==]'),
-                        required: pars[3]!=='?',
-                        description: pars[4]
-                    }
-                }
-                return false;
-            });
-        command.params = command.params.filter((i) => i !== false);
+                    return false;
+                });
+            command.params = command.params.filter((i) => i !== false);
+        }
         command.help = !!('h' in args.options || 'help' in args.options);
         command.quiet = !!('q' in args.options || 'quiet' in args.options);
         command.version = !!('v' in args.options || 'version' in args.options);
@@ -103,7 +105,7 @@ module.exports = {
     },
     validate_object_params (command) {
         const args = app.args;
-        if ('params' in command) {
+        if ('params' in command && command.params !== undefined) {
             let last_arg_index = 0;
             command.params.map((param) => {
                 if (param.arg) {
@@ -151,9 +153,9 @@ module.exports = {
         return command;
     },
     call () {
-
-        if (app.has(app.args.name)) {
-            let command = app.get(app.args.name);
+        let name = app.args.name;
+        if (app.has(name)) {
+            let command = app.get(name);
             command = app.help.parse_params(command);
             if (command.help && 'show_help' in command) {
                 command.show_help();
@@ -164,7 +166,7 @@ module.exports = {
                 command.handle();
             }
         } else {
-            app.help.die(`Command [${app.args.name}] not found!`, 404);
+            app.help.die(`Command [${name}] not found!`, 404);
         }
     }
 };

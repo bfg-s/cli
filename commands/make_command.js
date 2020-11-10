@@ -29,7 +29,7 @@ module.exports = class MakeProvider extends Command {
         app.help.file_put_contents(this.file, this.stub('{__dirname}/../stubs/command', {
             'command_name': this.command,
             'description': this.description,
-            'parameters': ` ${this.parameters}`,
+            'parameters': this.parameters ? ` ${this.parameters}` : '',
             'camel_name': this.camel_name,
             'class_name': this.class_name,
             'postfix': app.config.command_postfix,
