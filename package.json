@@ -2,7 +2,8 @@
   "name": "bfg-cli",
   "version": "1.0.0",
   "main": "./cli.js",
-  "repository": "https://github.com/bfg-s/bfg-mix",
+  "repository": "https://github.com/bfg-s/cli",
+  "keywords": ["bfg", "xsaven", "script", "cli"],
   "author": "bfg",
   "license": "MIT",
   "bin": {
