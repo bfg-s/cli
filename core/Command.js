@@ -16,17 +16,17 @@ function promiseFromChildProcess(child, out = []) {
 module.exports = class Command {
 
     success (text) {
-        this.process(text).start().succeed();
+        this.process(text.green).start().succeed();
         return this;
     }
 
     fail (text) {
-        this.process(text).start().fail();
+        this.process(text.red).start().fail();
         return this;
     }
 
     warn (text) {
-        this.process(text).start().warn();
+        this.process(text.yellow).start().warn();
         return this;
     }
 
