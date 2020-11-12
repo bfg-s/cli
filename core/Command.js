@@ -2,8 +2,26 @@ const Table = require('cli-table3');
 const loading =  require('loading-cli');
 const fs = require('fs');
 const path = require('path');
+const prompts = require('prompts');
+const { exec } = require('child_process');
+
+function promiseFromChildProcess(child, out = []) {
+    return new Promise(function (resolve, reject) {
+        child.addListener("error", reject);
+        child.addListener("exit", resolve);
+        child.stdout.on("data", (d) => out.push(d.trim().split(/\n/g)));
+    });
+}
 
 module.exports = class Command {
+
+    async exec (command, out = []) {
+        return await promiseFromChildProcess(exec(command), out);
+    }
+
+    async prompts (options) {
+        return await prompts(options);
+    }
 
     is_file (file) {
         return fs.existsSync(file);

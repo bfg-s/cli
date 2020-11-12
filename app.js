@@ -3,6 +3,9 @@ const ArgsParse = require('./core/ArgsParse');
 const Default = require('./core/Default');
 const fs = require('fs');
 
+require('bfg-js');
+require('bfg-node');
+
 const default_configs = {
     syntax: "module",
     extend: "bfg.js",
@@ -12,6 +15,9 @@ const default_configs = {
         "export": "js",
         "ts": "js"
     },
+    gits: [
+        "/"
+    ],
     provider_postfix: "ServiceProvider",
     provider_path: "resources/js/providers",
     middleware_postfix: "Middleware",
@@ -19,14 +25,13 @@ const default_configs = {
     command_postfix: "Command",
     command_path: "resources/js/commands",
 };
-require('bfg-js');
 
 app.bind('help', require('./helpers'));
 app.bind('args', new ArgsParse());
 app.bind('config', require('./config')(app, default_configs));
 app.bind('default', new Default);
 app.bind('commands', []);
-app.bind('command_dirs', () => {
+app.compute('command_dirs', () => {
     let commands = Array.isArray(app.config.commands) ? app.config.commands : [app.config.commands];
     commands.unshift('{__dirname}/commands');
     return commands.map(dir => dir.replace('{base_path}', app.help.base_path()).replace('{__dirname}', __dirname));

@@ -3,17 +3,23 @@
   "version": "1.0.1",
   "main": "./cli.js",
   "repository": "https://github.com/bfg-s/cli",
-  "keywords": ["bfg", "xsaven", "script", "cli"],
+  "keywords": [
+    "bfg",
+    "xsaven",
+    "script",
+    "cli"
+  ],
   "author": "bfg",
   "license": "MIT",
   "bin": {
     "bfg": "./cli.js"
   },
   "dependencies": {
+    "bfg-js": "^1.0.0",
     "cli-table3": "^0.6.0",
     "colors": "^1.4.0",
     "loading-cli": "^1.1.0",
-    "yargs": "^15.1.0",
-    "bfg-js": "^1.0.0"
+    "prompts": "^2.4.0",
+    "yargs": "^15.1.0"
   }
 }

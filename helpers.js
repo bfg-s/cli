@@ -15,25 +15,26 @@ module.exports = {
         process.exit(code);
     },
     error (text) {
-        app.log.error(String(text).bgRed.white);
+        console.error(String(text).bgRed.white);
     },
     info (text) {
-        app.log(String(text).green);
+        console.log(String(text).green);
     },
     comment (text) {
-        app.log(String(text).yellow);
+        console.log(String(text).yellow);
     },
     line (text) {
-        app.log(text);
+        console.log(text);
     },
     trim ( str, charlist ) {
         charlist = !charlist ? ' \s\xA0' : charlist.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\$1');
         let re = new RegExp('^[' + charlist + ']+|[' + charlist + ']+$', 'g');
         return str.replace(re, '');
     },
-    base_path (path = null) {
+    base_path (...paths) {
         let p = process.env.PWD;
-        if (path !== null) { p = `/${this.trim(p, '/')}/${this.trim(path, '/')}` }
+        paths = paths.filter(i => typeof i == 'string').map(i => this.trim(i.trim(), '/')).join('/')
+        if (paths !== '') { p = `/${this.trim(p, '/')}/${paths}` }
         return p;
     },
     parse_signature (obj) {
