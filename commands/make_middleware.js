@@ -8,15 +8,15 @@ module.exports = class MakeMiddleware extends Command {
 
         this.camel_name = app.str.camel(this.name, true);
         this.class_name = `${this.camel_name}${app.config.middleware_postfix}`;
-        this.dir = app.help.base_path(app.config.middleware_path);
-        this.file = `${this.dir}/${this.class_name}.${app.config.exts[app.config.syntax]}`;
+        this.dir = app.fs.base_path(app.config.middleware_path);
+        this.file = `${this.dir}/${this.class_name}.${this.ext}`;
 
-        if (this.is_file(this.file)) {
+        if (app.fs.is_file(this.file)) {
 
             this.exit(`Middleware [${this.class_name}] is exists!`);
         }
 
-        app.help.file_put_contents(this.file, this.stub('{__dirname}/../stubs/middleware', {
+        app.fs.put_contents(this.file, this.stub([__dirname, '..', 'stubs/middleware'], {
             'camel_name': this.camel_name,
             'class_name': this.class_name,
             'postfix': app.config.middleware_postfix,

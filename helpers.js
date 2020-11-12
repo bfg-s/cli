@@ -1,41 +1,28 @@
 const colors = require('colors');
-const fs = require('fs');
 colors.enable();
 
 module.exports = {
-    file_put_contents (file, content, cb) {
-        let dir = app.str.dirname(file);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        return fs.writeFileSync(file, content);
-    },
-    die (text = null, code = 0) {
-        if (text !== null) app.log(String(text).bgRed.white);
-        process.exit(code);
-    },
-    error (text) {
-        console.error(String(text).bgRed.white);
-    },
-    info (text) {
-        console.log(String(text).green);
-    },
-    comment (text) {
-        console.log(String(text).yellow);
-    },
-    line (text) {
-        console.log(text);
-    },
-    trim ( str, charlist ) {
-        charlist = !charlist ? ' \s\xA0' : charlist.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\$1');
-        let re = new RegExp('^[' + charlist + ']+|[' + charlist + ']+$', 'g');
-        return str.replace(re, '');
-    },
-    base_path (...paths) {
-        let p = process.env.PWD;
-        paths = paths.filter(i => typeof i == 'string').map(i => this.trim(i.trim(), '/')).join('/')
-        if (paths !== '') { p = `/${this.trim(p, '/')}/${paths}` }
-        return p;
+    inject_files () {
+        app.command_dirs.map((path) => {
+            if (app.fs.is_dir(path)) {
+                app.fs.read_dir(path).map((file) => {
+                    if (app.str.end_with(file, '.js')) {
+                        let objectClass = require(`${path}/${file}`);
+                        try {
+                            objectClass = new objectClass();
+                        } catch (e) {
+                            app.error(e);
+                            return ;
+                        }
+                        objectClass = app.help.parse_signature(objectClass);
+                        if ('handle' in objectClass && 'name' in objectClass) {
+                            app.bind(objectClass.name, objectClass);
+                            app.commands.push(objectClass);
+                        }
+                    }
+                });
+            }
+        });
     },
     parse_signature (obj) {
         if ('signature' in obj && obj.signature && /^([a-zA-Z0-9\_\-\:]{1,})\s(\{.*\})?\s?(.*)$/.test(obj.signature)) {
@@ -112,7 +99,7 @@ module.exports = {
                 if (param.arg) {
                     if (!(last_arg_index in args.arguments)) {
                         if (param.required) {
-                            app.help.die(`The parameter "${param.name}" was not found.`);
+                            app.die(`The parameter "${param.name}" was not found.`);
                         }
                     } else {
                         command[param.name] = args.arguments[last_arg_index];
@@ -141,9 +128,9 @@ module.exports = {
                         });
                     }
                     if (!finded && param.required) {
-                        app.help.die(`The option "${param.name}" was not found.`);
+                        app.die(`The option "${param.name}" was not found.`);
                     } else if (!finded && param.value && param.required) {
-                        app.help.die(`You need to provide a value for the "${param.name}" option.`);
+                        app.die(`You need to provide a value for the "${param.name}" option.`);
                     } else {
                         if (val !== undefined) command[param.name] = val;
                     }
@@ -160,14 +147,14 @@ module.exports = {
             command = app.help.parse_params(command);
             if (command.help && 'show_help' in command) {
                 command.show_help();
-                app.help.die();
+                app.die();
             }
             command = app.help.validate_object_params(command);
             if ('handle' in command) {
                 command.handle();
             }
         } else {
-            app.help.die(`Command [${name}] not found!`, 404);
+            app.die(`Command [${name}] not found!`, 404);
         }
     }
 };

@@ -15,6 +15,36 @@ function promiseFromChildProcess(child, out = []) {
 
 module.exports = class Command {
 
+    success (text) {
+        this.process(text).start().succeed();
+        return this;
+    }
+
+    fail (text) {
+        this.process(text).start().fail();
+        return this;
+    }
+
+    warn (text) {
+        this.process(text).start().warn();
+        return this;
+    }
+
+    async signed_exec (title, command) {
+        command = Array.isArray(command) ? command.join(' ') : command;
+        let out = [],
+            process = this.process({}).start(title);
+
+        try {
+            await this.exec(command, out);
+            process.succeed();
+        } catch (e) {
+            process.fail(e.message);
+        }
+
+        return out.flat();
+    }
+
     async exec (command, out = []) {
         return await promiseFromChildProcess(exec(command), out);
     }
@@ -23,35 +53,22 @@ module.exports = class Command {
         return await prompts(options);
     }
 
-    is_file (file) {
-        return fs.existsSync(file);
-    }
-
-    script_path (path = null) {
-        return path.resolve(__dirname, '..', path);
-    }
-
     get ext () {
         return app.config.syntax in app.config.exts ? app.config.exts[app.config.syntax] : 'js';
     }
 
     stub (file, params = {}) {
 
-        file = file.replace('{base_path}', app.help.base_path()).replace('{__dirname}', __dirname);
+        file = Array.isArray(file) ? app.fs.path(...file) : file;
         file += `/${app.config.syntax}.stub`;
 
-        if (!fs.existsSync(file)) {
-
-            app.help.die(`File template [${file}] not found!`);
+        if (!app.fs.is_file(file)) {
+            app.die(`File template [${file}] not found!`);
         }
 
-        let tpl = fs.readFileSync(file).toString();
-
-        Object.keys(params).map(k => {
-            tpl = tpl.replace(new RegExp(`\{${k}\}`, 'g'), params[k]);
-        });
-
-        return tpl;
+        return app.str.replace_tags(
+            app.fs.get_contents(file), params
+        );
     }
 
     process (options) {
@@ -94,7 +111,7 @@ module.exports = class Command {
     }
 
     exit (message, code = 0) {
-        return app.help.die(message, code);
+        return app.die(message, code);
     }
 
     line (...data) {

@@ -1,0 +1,19 @@
+{
+  "syntax": "module",
+  "extend": "bfg.js",
+  "commands": "{base_path}/resources/js/commands",
+  "exts": {
+    "module": "js",
+    "export": "js",
+    "ts": "js"
+  },
+  "gits": [
+    "/"
+  ],
+  "provider_postfix": "ServiceProvider",
+  "provider_path": "resources/js/providers",
+  "middleware_postfix": "Middleware",
+  "middleware_path": "resources/js/middlewares",
+  "command_postfix": "Command",
+  "command_path": "resources/js/commands"
+}
