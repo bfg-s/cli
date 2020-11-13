@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bfg-js": "^1.0.0",
+    "bfg-node": "^1.0.0",
     "cli-table3": "^0.6.0",
     "colors": "^1.4.0",
     "loading-cli": "^1.1.0",
