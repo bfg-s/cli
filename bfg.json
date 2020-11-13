@@ -10,6 +10,9 @@
   "gits": [
     "/"
   ],
+  "gits_tag": [
+
+  ],
   "provider_postfix": "ServiceProvider",
   "provider_path": "resources/js/providers",
   "middleware_postfix": "Middleware",

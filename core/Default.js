@@ -1,8 +1,11 @@
 module.exports = class Default extends Command {
 
-    handle () {
+    async handle () {
 
-        this.line('Bfg ' + String('v' + app.version).green)
+        let out = await this.cmd(`cd ${app.fs.path(__dirname, '..')} && git tag`);
+        let ver = out.length ? app.obj.last(out) : '1.0.0';
+
+        this.line('Bfg ' + String('v' + ver).green)
             .line()
             .line('Usage:')
             .scheme([['', '', 'command [options] [arguments]']])

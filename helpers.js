@@ -140,7 +140,7 @@ module.exports = {
         }
         return command;
     },
-    call () {
+    async call () {
         let name = app.args.name;
         if (app.has(name)) {
             let command = app.get(name);
@@ -151,7 +151,8 @@ module.exports = {
             }
             command = app.help.validate_object_params(command);
             if ('handle' in command) {
-                command.handle();
+                let code = await command.handle();
+                app.die(code);
             }
         } else {
             app.die(`Command [${name}] not found!`, 404);

@@ -49,6 +49,34 @@ module.exports = class Command {
         return await promiseFromChildProcess(exec(command), out);
     }
 
+    async cmd (command) {
+        let out = [];
+        await this.exec(command, out);
+        return out.flat();
+    }
+
+    async ask (question, defaultValue = null, validate) {
+        let result = await this.prompts({
+            type: 'text',
+            name: 'value',
+            message: question,
+            initial: defaultValue,
+            validate: validate
+        });
+        return result.value
+    }
+
+    async confirm (message, defaultValue = true, active = 'yes', inactive = 'no') {
+        let result = await this.prompts({
+            type: 'toggle',
+            name: 'value',
+            message: message,
+            initial: defaultValue,
+            active, inactive
+        });
+        return result.value
+    }
+
     async prompts (options) {
         return await prompts(options);
     }
