@@ -1,7 +1,7 @@
 module.exports = class GitPush extends Command {
 
     get signature() {
-        return "git:push Git auto push";
+        return "git:push {-c|--current? Push only for current path} Git auto push";
     }
 
     async handle() {

@@ -2,12 +2,14 @@ module.exports = class TestCommand extends Command {
 
     get signature () {
 
-        return "git:tag Git auto tag";
+        this.current = false;
+
+        return "git:tag {-c|--current? Create tag only for current path} Git auto tag";
     }
 
     async handle () {
 
-        let gits = app.config.gits_tag;
+        let gits = this.current ? ['/'] : app.config.gits_tag;
 
         for (let i = 0; i < gits.length; i++) {
 
@@ -67,7 +69,5 @@ module.exports = class TestCommand extends Command {
         if (!gits.length) {
             this.warn('GIT: Nothing to create tags from!');
         }
-
-        this.exit();
     }
 }
