@@ -13,4 +13,4 @@ rl.on('SIGINT', () => {
 
 require('./app');
 
-app.help.call();
+app.cmd.call();

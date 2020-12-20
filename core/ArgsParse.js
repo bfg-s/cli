@@ -5,15 +5,18 @@ module.exports = class ArgsParse {
     constructor() {
 
         let args = [];
-        this.name = 'default';
+        this.name = undefined;
         this.options = [];
         this.arguments = [];
+        this.props = {};
 
         process.argv.map((val, i) => {
-            if ( i > 2 ) {
-                args.push(val);
-            } else if ( i === 2) {
-                this.name = val;
+            if ( i > 1 ) {
+                if (!this.name && !/^\-/.test(val)) {
+                    this.name = val;
+                } else {
+                    args.push(val);
+                }
             }
         });
 
@@ -26,6 +29,7 @@ module.exports = class ArgsParse {
             } else if (/^\-([a-zA-Z0-9]{1,3}){1}$/.test(arg)) {
                 let o = /^\-([a-zA-Z0-9]{1,3}){1}$/.exec(arg);
                 this.options[o[1]] = wait;
+                this.props[o[1]] = this.options[o[1]];
             } else {
                 if (app.obj.last(this.options) === wait) {
                     this.options[app.obj.last_key(this.options)] = this.checkValue(arg);
@@ -38,8 +42,12 @@ module.exports = class ArgsParse {
         Object.keys(this.options).map((key) => {
             if (this.options[key] === wait) {
                 this.options[key] = null;
+                if (key in this.props && this.props[key] === wait) {
+                    this.props[key] = null;
+                }
             }
         });
+        if (!this.name) this.name = 'default';
     }
 
     checkValue (val) {

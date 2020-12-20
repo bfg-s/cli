@@ -1,7 +1,7 @@
 {
   "name": "bfg-cli",
-  "version": "1.0.2",
-  "main": "./cli.js",
+  "version": "1.0.3",
+  "main": "app.js",
   "repository": "https://github.com/bfg-s/cli",
   "keywords": [
     "bfg",
@@ -15,12 +15,12 @@
     "bfg": "./cli.js"
   },
   "dependencies": {
-    "bfg-js": "^1.0.0",
-    "bfg-node": "^1.0.0",
+    "bfg-js": "^1.0",
+    "bfg-node": "^1.0",
+    "chokidar": "^3.4.3",
     "cli-table3": "^0.6.0",
     "colors": "^1.4.0",
     "loading-cli": "^1.1.0",
-    "prompts": "^2.4.0",
-    "yargs": "^15.1.0"
+    "prompts": "^2.4.0"
   }
 }

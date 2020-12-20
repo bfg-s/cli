@@ -30,13 +30,13 @@ module.exports = class Command {
         return this;
     }
 
-    async signed_exec (title, command) {
+    async signed_exec (title, command, dir = app.fs.pwd) {
         command = Array.isArray(command) ? command.join(' ') : command;
         let out = [],
             process = this.process({}).start(title);
 
         try {
-            await this.exec(command, out);
+            await this.exec(command, out, dir);
             process.succeed();
         } catch (e) {
             process.fail(e.message);
@@ -45,13 +45,15 @@ module.exports = class Command {
         return out.flat();
     }
 
-    async exec (command, out = []) {
-        return await promiseFromChildProcess(exec(command), out);
+    async exec (command, out = [], dir = app.fs.pwd) {
+        this.log(`Run cli command: ${command}`, 1);
+        return await promiseFromChildProcess(exec(command, {cwd: dir}), out);
     }
 
-    async cmd (command) {
+    async cmd (command, dir = app.fs.pwd) {
         let out = [];
-        await this.exec(command, out);
+        this.log(`Run cli command: ${command}`, 1);
+        await this.exec(command, out, dir);
         return out.flat();
     }
 
@@ -103,10 +105,16 @@ module.exports = class Command {
         return loading(options)
     }
 
+    tbl (options = {}) {
+        return new Table(options);
+    }
+
     table (rows, options = {}) {
-        let table = new Table(options);
+        let table = this.tbl(options);
         table.push(...rows);
-        console.log(table.toString());
+        if (!this.quiet) {
+            console.log(table.toString());
+        }
         return this;
     }
 
@@ -139,20 +147,35 @@ module.exports = class Command {
     }
 
     exit (message, code = 0) {
-        return app.die(message, code);
+        if (!this.quiet) {
+            return app.die(message, code);
+        } else {
+            return app.die(null, code);
+        }
     }
 
     line (...data) {
-        console.log(...data);
+        if (!this.quiet) {
+            console.log(...data);
+        }
+        return this;
+    }
+
+    log (text, verbose = 1) {
+        if (this.verbose >= verbose) {
+            if (!this.quiet) {
+                app.log(text);
+            }
+        }
         return this;
     }
 
     show_help () {
         let has_options = false;
-        let args = 'params' in this ? this.params.map((param) => {
+        let args = 'params' in this && Array.isArray(this.params) ? this.params.map((param) => {
             return param.arg ? param.name : false;
         }).filter(i => i !== false) : [];
-        let opts = 'params' in this ? this.params.filter((param) => {
+        let opts = 'params' in this && Array.isArray(this.params) ? this.params.filter((param) => {
             return !param.arg;
         }) : [];
         let args_info = args.length ? `<${args.join('> <')}>` : '';
@@ -197,5 +220,11 @@ module.exports = class Command {
             ['', '', String('--v|vv|vvv,').green, String('--verbose').green, '', 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug']
         );
         this.scheme(options);
+    }
+
+    show_version () {
+        let p = app.fs.get_json_contents([__dirname, '..', 'package.json']);
+        let v = 'version' in p ? p.version : '1.0.0';
+        this.line('Bfg ' + String('v' + v).green);
     }
 }

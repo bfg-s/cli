@@ -2,6 +2,18 @@ const colors = require('colors');
 colors.enable();
 
 module.exports = {
+    modules () {
+        let nm = app.fs.base_path('node_modules');
+        if (app.fs.is_dir(nm)) {
+            let modules = [];
+            app.fs.read_dir(nm).map(f => {
+                let nmd = app.fs.base_path('node_modules', f, 'cli');
+                if (app.fs.is_dir(nmd)) {
+                    app.command_dirs.push(nmd);
+                }
+            });
+        }
+    },
     inject_files () {
         app.command_dirs.map((path) => {
             if (app.fs.is_dir(path)) {
@@ -14,7 +26,7 @@ module.exports = {
                             app.error(e);
                             return ;
                         }
-                        objectClass = app.help.parse_signature(objectClass);
+                        objectClass = app.cmd.parse_signature(objectClass);
                         if ('handle' in objectClass && 'name' in objectClass) {
                             app.bind(objectClass.name, objectClass);
                             app.commands.push(objectClass);
@@ -34,9 +46,8 @@ module.exports = {
         return obj;
     },
     parse_params (command) {
-        if (!('params' in command)) return command;
         const args = app.args;
-        if (command.params !== undefined) {
+        if ('params' in command && command.params) {
             command.params = String(command.params)
                 .replace(/\}\{/g, '} {')
                 .split(/}\s{/)
@@ -79,16 +90,19 @@ module.exports = {
                 });
             command.params = command.params.filter((i) => i !== false);
         }
+
         command.help = !!('h' in args.options || 'help' in args.options);
         command.quiet = !!('q' in args.options || 'quiet' in args.options);
-        command.version = !!('v' in args.options || 'version' in args.options);
-        command.verbose = 'v' in args.options ? 1 : (
-            'vv' in args.options ? 2 : (
-                'vvv' in args.options ? 3 : (
-                    'verbose' in args.options ? 3 : 0
+        command.version = !!('v' in args.props || 'version' in args.props);
+        command.verbose = !command.version ? (
+            'v' in args.options ? 1 : (
+                'vv' in args.options ? 2 : (
+                    'vvv' in args.options ? 3 : (
+                        'verbose' in args.options ? 3 : 0
+                    )
                 )
             )
-        );
+        ) : 0;
         return command;
     },
     validate_object_params (command) {
@@ -134,28 +148,38 @@ module.exports = {
                     } else {
                         if (val !== undefined) command[param.name] = val;
                     }
-                    //console.log(command, param.name in args.options);
                 }
             });
         }
         return command;
     },
-    async call () {
-        let name = app.args.name;
+    async call (name = null, params) {
+        let personal = !!name;
+        name = personal ? name : app.args.name;
         if (app.has(name)) {
             let command = app.get(name);
-            command = app.help.parse_params(command);
-            if (command.help && 'show_help' in command) {
+            command = app.cmd.parse_params(command);
+            if (!personal && command.help && 'show_help' in command) {
                 command.show_help();
-                app.die();
+                app.die(null, 0);
             }
-            command = app.help.validate_object_params(command);
+            if (!personal && command.version && 'show_version' in command) {
+                command.show_version();
+                app.die(null, 0);
+            }
+            command = app.cmd.validate_object_params(command);
             if ('handle' in command) {
+                if (personal && typeof params === 'object') {
+                    Object.keys(params).map(k => {
+                        if (!app.num.isNumber(k)) command[k] = params[k];
+                    });
+                }
                 let code = await command.handle();
-                app.die(code);
+                if (!personal && code !== 'wait') app.die(null, code || 0);
             }
         } else {
-            app.die(`Command [${name}] not found!`, 404);
+            if (!personal) app.die(`Command [${name}] not found!`, 404);
+            else app.error(`Command [${name}] not found!`);
         }
     }
 };

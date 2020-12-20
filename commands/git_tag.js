@@ -17,7 +17,7 @@ module.exports = class TestCommand extends Command {
             let dir = app.fs.base_path(directory);
             if (app.fs.is_dir(app.fs.base_path(directory, '.git'))) {
 
-                let out = await this.signed_exec(`GIT: [${dir}] Checking for the need to add a tag...`, `cd ${dir} && git tag --contains`);
+                let out = await this.signed_exec(`GIT: [${dir}] Checking for the need to add a tag...`, `git tag --contains`, dir);
 
                 if (!out.length) {
 
@@ -25,10 +25,10 @@ module.exports = class TestCommand extends Command {
 
                     if (!ans) { continue; }
 
-                    out = await this.signed_exec(`GIT: [${dir}] Get last version...`, `cd ${dir} && git tag`);
+                    out = await this.signed_exec(`GIT: [${dir}] Get last version...`, `git tag`, dir);
                     let ver = out.length ? app.obj.last(out) : '1.0.0';
                     if (out.length) {
-                        this.success(`Found last version [${ver}]`);
+                        this.success(`GIT: [${dir}] Found last version [${ver}]`);
                         ver = ver.split('.');
                         ver[app.obj.last_key(ver)] =
                             app.num.isNumber(app.obj.last(ver)) ? (Number(app.obj.last(ver))+1) : 0;
@@ -48,12 +48,14 @@ module.exports = class TestCommand extends Command {
 
                     await this.signed_exec(
                         `GIT: [${dir}] Creating a new tag [${ver}][${message}]...`,
-                        `cd ${dir} && git tag -a ${ver} -m '${message}'`
+                        `git tag -a ${ver} -m '${message}'`,
+                        dir
                     );
 
                     await this.signed_exec(
                         `GIT: [${dir}] Publish a new tag...`,
-                        `cd ${dir} && git push --tag`
+                        `git push --tag`,
+                        dir
                     );
 
                     this.success(`GIT: [${dir}] Tag [${ver}] created!`);

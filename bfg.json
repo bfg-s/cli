@@ -1,7 +1,9 @@
 {
   "syntax": "module",
   "extend": "bfg.js",
-  "commands": "{base_path}/resources/js/commands",
+  "commands": [
+    "resources/js/commands"
+  ],
   "exts": {
     "module": "js",
     "export": "js",

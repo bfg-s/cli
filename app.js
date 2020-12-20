@@ -2,33 +2,47 @@ globalThis.Command = require('./core/Command');
 const ArgsParse = require('./core/ArgsParse');
 const Default = require('./core/Default');
 
-require('bfg-js');
-
-require('bfg-node');
+let app = require('bfg-js').default;
 
 app.provider({
     register() {
-        app.bind('help', require('./helpers'));
-        app.bind('args', new ArgsParse());
-        app.bind('config', require('./config'));
-        app.bind('default', new Default);
-        app.bind('commands', []);
-        app.compute('command_dirs', () => {
-            let commands = Array.isArray(app.config.commands) ? app.config.commands : [app.config.commands];
-            commands.unshift('{__dirname}/commands');
-            return commands.map(dir => dir.replace('{base_path}', app.fs.path()).replace('{__dirname}', __dirname));
-        });
-        app.bind('die', (text = null, code = 0) => {
+        this.app.execute('globalize');
+        this.app.register(require('bfg-node'));
+        this.app.bind('cmd', require('./cmd'));
+        this.app.bind('args', new ArgsParse());
+        this.app.bind('config', require('./config'));
+        this.app.bind('default', new Default);
+        this.app.bind('commands', []);
+        this.app.bind('command_dirs', () => {
+            let commands = app.config.commands;
+            commands = commands.map(dir => app.fs.base_path(dir));
+            commands.unshift(app.fs.path(__dirname, 'commands'));
+            return commands;
+        }, true);
+        this.app.bind('die', (text = null, code = 0) => {
             if (text !== null) console.log(String(text).bgRed.white);
             process.exit(code);
         });
-        app.bind('error', (text) => {
+        this.app.bind('error', (text) => {
             console.error(String(text).bgRed.white);
         });
+        this.app.cmd.modules();
+        let with_mix = false;
+        if (this.app.fs.is_dir(this.app.fs.base_path('node_modules/laravel-mix'))) {
+            let mix = require('laravel-mix');
+            if ('extend' in mix) {
+                with_mix = true
+                mix.extend('cli', (m, name, params) => this.app.cmd.call(name, params));
+                this.app.bind('mix', mix);
+            }
+        }
+        this.app.bind('with_mix', with_mix);
     },
     boot() {
-        app.help.inject_files();
+        this.app.cmd.inject_files();
     }
 });
 
 app.boot();
+
+module.exports = app.cmd.call;
