@@ -1,6 +1,5 @@
 const colors = require('colors');
 colors.enable();
-
 module.exports = {
     modules () {
         let nm = app.fs.base_path('node_modules');
