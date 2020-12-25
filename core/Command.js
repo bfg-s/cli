@@ -1,7 +1,5 @@
 const Table = require('cli-table3');
 const loading =  require('loading-cli');
-const fs = require('fs');
-const path = require('path');
 const prompts = require('prompts');
 const { exec } = require('child_process');
 

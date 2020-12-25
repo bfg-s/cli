@@ -20,7 +20,7 @@ module.exports = class TestCommand extends Command {
 
     get signature () {
 
-        return "watch Run a Bfg watcher";
+        return "watch Run a watcher";
     }
 
     handle () {
