@@ -1,6 +1,16 @@
 globalThis.Command = require('./core/Command');
 const ArgsParse = require('./core/ArgsParse');
 const Default = require('./core/Default');
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.on('SIGINT', () => {
+    process.exit();
+});
 
 let app = require('bfg-js').default;
 
