@@ -121,8 +121,6 @@ module.exports = class TestCommand extends Command {
             }))
         }
 
-        await this.signed_exec(`Run JavaScript production....`, `npm run prod`);
-
         this.info('Bfg project created!');
     }
 
