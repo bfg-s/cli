@@ -39,12 +39,7 @@ app.provider({
         this.app.cmd.modules();
         let with_mix = false;
         if (this.app.fs.is_dir(this.app.fs.base_path('node_modules/laravel-mix'))) {
-            let mix = require('laravel-mix');
-            if ('extend' in mix) {
-                with_mix = true
-                mix.extend('cli', (m, name, params) => this.app.cmd.call(name, params));
-                this.app.bind('mix', mix);
-            }
+            with_mix = true;
         }
         this.app.bind('with_mix', with_mix);
     },

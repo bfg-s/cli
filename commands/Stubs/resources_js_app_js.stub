@@ -1,0 +1,18 @@
+const app = require('bfg-js').app;
+
+app.vue = require('vue');
+
+app.register(require('bfg-schema').default);
+app.register(require('bfg-vue').default);
+
+app.provider(require('./components'));
+app.provider({
+    register () {
+        app.bind('dev', process.env.NODE_ENV === 'development');
+        if (process.env.NODE_ENV === 'development') {
+            app.execute('globalize');
+        }
+    }
+});
+
+app.boot();

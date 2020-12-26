@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Layouts;
+
+use Bfg\Layout\Core\MainLayout;
+
+/**
+ * Class DefaultLayout
+ * @package App\Layouts
+ */
+class DefaultLayout extends MainLayout {
+
+    /**
+     * @var string[]
+     */
+    protected $styles = [
+        "css/app.css",
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $bscripts = [
+        "js/app.js"
+    ];
+}

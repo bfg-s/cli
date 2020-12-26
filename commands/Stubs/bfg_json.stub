@@ -1,0 +1,23 @@
+{
+  "gits": [
+    "/",
+    "/bfg/admin",
+    "/bfg/dev",
+    "/bfg/entity",
+    "/bfg/layout",
+    "/bfg-js/bfg-cli",
+    "/bfg-js/bfg-js",
+    "/bfg-js/bfg-node",
+    "/bfg-js/bfg-vue"
+  ],
+  "gits_tag": [
+    "/bfg/admin",
+    "/bfg/dev",
+    "/bfg/entity",
+    "/bfg/layout",
+    "/bfg-js/bfg-cli",
+    "/bfg-js/bfg-js",
+    "/bfg-js/bfg-node",
+    "/bfg-js/bfg-vue"
+  ]
+}
