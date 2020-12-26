@@ -20,31 +20,29 @@ module.exports = class TestCommand extends Command {
             'bfg/dev', 'bfg/entity', 'bfg/layout'
         ];
 
-        let npm_packages = [
-            'bfg-cli', 'bfg-js', 'bfg-node', 'bfg-schema', 'bfg-vue'
-        ];
-
-        let root_npm_packages = [
-            // 'bfg-cli', 'bfg-js', 'bfg-node', 'bfg-schema', 'bfg-vue'
-            'git+https://git@github.com/bfg-s/cli.git',
-            'git+https://git@github.com/bfg-s/bfg-js.git',
-            'git+https://git@github.com/bfg-s/node.git',
-            'git+https://git@github.com/bfg-s/schema.git',
-            'git+https://git@github.com/bfg-s/vue.git',
-        ];
+        let root_npm_packages = {
+            'bfg-cli': 'https://git@github.com/bfg-s/cli.git',
+            'bfg-js': 'https://git@github.com/bfg-s/bfg-js.git',
+            'bfg-node': 'https://git@github.com/bfg-s/node.git',
+            'bfg-schema': 'https://git@github.com/bfg-s/schema.git',
+            'bfg-vue': 'https://git@github.com/bfg-s/vue.git',
+        };
 
         if (admin) {
 
             composer_packages.push('bfg/admin');
         }
 
+        this.exit();
+
         await this.signed_exec(
             `Installing and configuration of Laravel...`,
             `composer create-project laravel/laravel .`
         );
+
         await this.signed_exec(
             `Installing and configuring BFG packages with composer...`,
-            `composer require ${composer_packages.join(' ')} ${this.root ? '-—prefer-source':''}`
+            `composer require ${composer_packages.join(' ')} ${this.root ? '--prefer-source':''}`
         );
         await this.signed_exec(
             `Installing JavaScript dependencies....`,
@@ -57,13 +55,24 @@ module.exports = class TestCommand extends Command {
         if (!this.root) {
             await this.signed_exec(
                 `Installing and configuring BFG packages with npm...`,
-                `npm install ${npm_packages.join(' ')} --save-dev`
+                `npm install ${Object.keys(root_npm_packages).join(' ')} --save-dev`
             );
         } else {
-            await this.signed_exec(
-                `Installing and configuring BFG packages with npm...`,
-                `npm install ${root_npm_packages.join(' ')} --save-dev`
+            // await this.signed_exec(
+            //     `Installing and configuring BFG packages with npm...`,
+            //     `npm install ${root_npm_packages.join(' ')} --save-dev`
+            // );
+            app.fs.mkdir(
+                app.fs.base_path('bfg-js')
             );
+            await Promise.all(Object.keys(root_npm_packages).map(async (pac) => {
+                let repo = root_npm_packages[pac];
+                await this.signed_exec(
+                    `Clone [${repo}]...`,
+                    `git clone ` + repo,
+                    app.fs.base_path('bfg-js')
+                );
+            }));
         }
 
         app.fs.put_contents(
@@ -109,15 +118,24 @@ module.exports = class TestCommand extends Command {
                 app.fs.base_path('bfg.json'),
                 this.get_stub('bfg_json'));
 
-            await this.signed_exec(`Vendor link create...`, `ln -s ${app.fs.base_path('vendor', 'bfg')} ${app.fs.base_path('bfg')}`);
-            app.fs.mkdir(
-                app.fs.base_path('bfg-js')
+            await this.signed_exec(
+                `Vendor link create...`,
+                `ln -s ${app.fs.base_path('vendor', 'bfg')} ${app.fs.base_path('bfg')}`
             );
-            await Promise.all(npm_packages.map(async (p) => {
-                await this.signed_exec(`JS [${p}] Moving to the working directory...`, `mv ${app.fs.base_path('node_modules', p)} ${app.fs.base_path('bfg-js', p)}`);
-                await this.signed_exec(`JS [${p}] Generation of a special link...`, `npm ln`, app.fs.base_path('bfg-js', p));
-                await this.signed_exec(`JS [${p}] Integration of the link into the current project...`, `npm ln ${p}`);
-                await this.signed_exec(`JS [${p}] Installing development environment dependencies...`, `npm install`, app.fs.base_path('bfg-js', p));
+            await Promise.all(Object.keys(root_npm_packages).map(async (p) => {
+                await this.signed_exec(
+                    `JS [${p}] Generation of a special link...`,
+                    `npm ln`, app.fs.base_path('bfg-js', p)
+                );
+                await this.signed_exec(
+                    `JS [${p}] Integration of the link into the current project...`,
+                    `npm ln ${p}`
+                );
+                await this.signed_exec(
+                    `JS [${p}] Installing development environment dependencies...`,
+                    `npm install`,
+                    app.fs.base_path('bfg-js', p)
+                );
             }))
         }
 
