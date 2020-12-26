@@ -2,7 +2,7 @@
 
 namespace App\Layouts;
 
-use Bfg\Layout\Core\MainLayout;
+use Bfg\Layout\MainLayout;
 
 /**
  * Class DefaultLayout

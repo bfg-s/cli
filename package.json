@@ -1,20 +1,43 @@
 {
-  "name": "bfg-cli",
-  "version": "1.0.7",
-  "description": "A control package by a group of packages.",
-  "main": "app.js",
-  "repository": "https://github.com/bfg-s/cli",
-  "keywords": [
-    "bfg",
-    "xsaven",
-    "script",
-    "cli"
-  ],
-  "author": "bfg",
-  "license": "MIT",
-  "bin": {
-    "bfg": "./cli.js"
+  "_from": "bfg-cli",
+  "_id": "bfg-cli@1.0.7",
+  "_inBundle": false,
+  "_integrity": "sha512-t84dRHbiagl//jRs5O8mUcEKfAB3xzTHDM6is6txu8ojR3smfswrNHm9uN0QgqL1JuA0i3r9NjM4zNa7LCMK7A==",
+  "_location": "/bfg-cli",
+  "_phantomChildren": {
+    "is-glob": "4.0.1",
+    "normalize-path": "3.0.0",
+    "picomatch": "2.2.2"
   },
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "bfg-cli",
+    "name": "bfg-cli",
+    "escapedName": "bfg-cli",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER",
+    "/bfg-vue"
+  ],
+  "_resolved": "https://registry.npmjs.org/bfg-cli/-/bfg-cli-1.0.7.tgz",
+  "_shasum": "eecf0718eaa80846dae62de1ef5231ec00c6470b",
+  "_spec": "bfg-cli",
+  "_where": "/Users/xsaven/PhpstormProjects/bfg2",
+  "author": {
+    "name": "bfg"
+  },
+  "bin": {
+    "bfg": "cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/bfg-s/cli/issues"
+  },
+  "bundleDependencies": false,
   "dependencies": {
     "bfg-js": "^1.0",
     "bfg-node": "^1.0",
@@ -23,5 +46,22 @@
     "colors": "^1.4.0",
     "loading-cli": "^1.1.0",
     "prompts": "^2.4.0"
-  }
+  },
+  "deprecated": false,
+  "description": "A control package by a group of packages.",
+  "homepage": "https://github.com/bfg-s/cli#readme",
+  "keywords": [
+    "bfg",
+    "xsaven",
+    "script",
+    "cli"
+  ],
+  "license": "MIT",
+  "main": "app.js",
+  "name": "bfg-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bfg-s/cli.git"
+  },
+  "version": "1.0.7"
 }

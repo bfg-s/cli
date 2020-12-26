@@ -24,16 +24,42 @@ module.exports = class TestCommand extends Command {
             'bfg-cli', 'bfg-js', 'bfg-node', 'bfg-schema', 'bfg-vue'
         ];
 
+        let root_npm_packages = [
+            'bfg-cli', 'bfg-js', 'bfg-node', 'bfg-schema', 'bfg-vue'
+        ];
+
         if (admin) {
 
             composer_packages.push('bfg/admin');
         }
 
-        await this.signed_exec(`Installing and configuration of Laravel...`, `composer create-project laravel/laravel .`);
-        await this.signed_exec(`Installing and configuring BFG packages with composer...`, `composer require ${composer_packages.join(' ')}`);
-        await this.signed_exec(`Installing JavaScript dependencies....`, `npm install`);
-        await this.signed_exec(`Installing VueJs3 components...`, `npm install @types/webpack-env @vue/compiler-sfc vue-loader@next laravel-mix-vue3 --save-dev`);
-        await this.signed_exec(`Installing and configuring BFG packages with npm...`, `npm install ${npm_packages.join(' ')} --save-dev`);
+        await this.signed_exec(
+            `Installing and configuration of Laravel...`,
+            `composer create-project laravel/laravel .`
+        );
+        await this.signed_exec(
+            `Installing and configuring BFG packages with composer...`,
+            `composer require ${composer_packages.join(' ')} ${this.root ? '-—prefer-source':''}`
+        );
+        await this.signed_exec(
+            `Installing JavaScript dependencies....`,
+            `npm install`
+        );
+        await this.signed_exec(
+            `Installing VueJs3 components...`,
+            `npm install @types/webpack-env @vue/compiler-sfc vue-loader@next laravel-mix-vue3 --save-dev`
+        );
+        if (!this.root) {
+            await this.signed_exec(
+                `Installing and configuring BFG packages with npm...`,
+                `npm install ${npm_packages.join(' ')} --save-dev`
+            );
+        } else {
+            await this.signed_exec(
+                `Installing and configuring BFG packages with npm...`,
+                `npm install ${root_npm_packages.join(' ')} --save-dev`
+            );
+        }
 
         app.fs.put_contents(
             app.fs.base_path('resources/js/app.js'),
