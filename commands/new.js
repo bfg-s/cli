@@ -33,8 +33,6 @@ module.exports = class TestCommand extends Command {
             composer_packages.push('bfg/admin');
         }
 
-        this.exit();
-
         await this.signed_exec(
             `Installing and configuration of Laravel...`,
             `composer create-project laravel/laravel .`
