@@ -8,12 +8,6 @@ module.exports = class TestCommand extends Command {
         });
         if (app.with_mix) {
             app.bind('watch', this);
-            app.mix.extend('on', (m, path, cb, event) => this.on(path, cb, event));
-            app.mix.extend('on_add', (m, path, cb) => this.on_add(path, cb));
-            app.mix.extend('on_change', (m, path, cb) => this.on_change(path, cb));
-            app.mix.extend('on_unlink', (m, path, cb) => this.on_unlink(path, cb));
-            app.mix.extend('on_add_dir', (m, path, cb) => this.on_add_dir(path, cb));
-            app.mix.extend('on_unlink_dir', (m, path, cb) => this.on_unlink_dir(path, cb));
             this.handle();
         }
     }
