@@ -29,7 +29,6 @@ module.exports = class TestCommand extends Command {
         };
 
         if (admin) {
-
             composer_packages.push('bfg/admin');
         }
 
@@ -56,10 +55,6 @@ module.exports = class TestCommand extends Command {
                 `npm install ${Object.keys(root_npm_packages).join(' ')} --save-dev`
             );
         } else {
-            // await this.signed_exec(
-            //     `Installing and configuring BFG packages with npm...`,
-            //     `npm install ${root_npm_packages.join(' ')} --save-dev`
-            // );
             app.fs.mkdir(
                 app.fs.base_path('bfg-js')
             );
@@ -72,49 +67,20 @@ module.exports = class TestCommand extends Command {
                 );
             }));
         }
+        app.fs.mkdir(app.fs.base_path('resources/js/components'));
+        app.fs.mkdir(app.fs.base_path('app/Components'));
 
-        app.fs.put_contents(
-            app.fs.base_path('resources/js/app.js'),
-            this.get_stub('resources_js_app_js')
-        );
-
-        app.fs.put_contents(
-            app.fs.base_path('resources/js/components.js'),
-            this.get_stub(`resources_js_components_js`));
-
-        app.fs.mkdir(
-            app.fs.base_path('resources/js/components')
-        );
-
-        app.fs.put_contents(
-            app.fs.base_path('webpack.mix.js'),
-            this.get_stub('webpack_mix_js'));
-
-        app.fs.put_contents(
-            app.fs.base_path('tsconfig.json'),
-            this.get_stub('tsconfig_json'));
-
-        app.fs.put_contents(
-            app.fs.base_path('app/Layouts/DefaultLayout.php'),
-            this.get_stub('app_Layouts_DefaultLayout_php'));
-
-        app.fs.mkdir(
-            app.fs.base_path('app/Components')
-        );
-
-        app.fs.put_contents(
-            app.fs.base_path('app/Http/Controllers/HomeController.php'),
-            this.get_stub('app_Layouts_DefaultLayout_php'));
-
-        app.fs.put_contents(
-            app.fs.base_path('routes/web.php'),
-            this.get_stub('routes_web_php'));
+        await this.put_stub('resources/js/app.js', 'resources_js_app_js');
+        await this.put_stub('resources/js/components.js', 'resources_js_components_js');
+        await this.put_stub('webpack.mix.js', 'webpack_mix_js');
+        await this.put_stub('tsconfig.json', 'tsconfig_json');
+        await this.put_stub('app/Layouts/DefaultLayout.php', 'app_Layouts_DefaultLayout_php');
+        await this.put_stub('app/Http/Controllers/HomeController.php', 'app_Layouts_DefaultLayout_php');
+        await this.put_stub('routes/web.php', 'routes_web_php');
 
         if (this.root) {
 
-            app.fs.put_contents(
-                app.fs.base_path('bfg.json'),
-                this.get_stub('bfg_json'));
+            await this.put_stub('bfg.json', 'bfg_json');
 
             await this.signed_exec(
                 `Vendor link create...`,
@@ -125,10 +91,14 @@ module.exports = class TestCommand extends Command {
                     `JS [${p}] Generation of a special link...`,
                     `npm ln`, app.fs.base_path('bfg-js', p)
                 );
+            }))
+            await Promise.all(Object.keys(root_npm_packages).map(async (p) => {
                 await this.signed_exec(
                     `JS [${p}] Integration of the link into the current project...`,
                     `npm ln ${p}`
                 );
+            }))
+            await Promise.all(Object.keys(root_npm_packages).map(async (p) => {
                 await this.signed_exec(
                     `JS [${p}] Installing development environment dependencies...`,
                     `npm install`,
@@ -140,7 +110,10 @@ module.exports = class TestCommand extends Command {
         this.info('Bfg project created!');
     }
 
-    get_stub (stab) {
-        return app.fs.get_contents(path.join(__dirname, 'Stubs', stab + ".stub"));
+    async put_stub (file, stab) {
+        await app.fs.put_contents(
+            app.fs.base_path(file),
+            app.fs.get_contents(path.join(__dirname, 'Stubs', stab + ".stub"))
+        );
     }
 }
