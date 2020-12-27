@@ -3,8 +3,12 @@ module.exports = class TestCommand extends Command {
     get signature () {
 
         this.current = false;
+        this.publish = false;
 
-        return "git:tag {-c|--current? Create tag only for current path} Git auto tag";
+        return "git:tag " +
+            "{-c|--current? Create tag only for current path} " +
+            "{-p|--publish? Run npm publish} " +
+            "Git auto tag";
     }
 
     async handle () {
@@ -57,6 +61,14 @@ module.exports = class TestCommand extends Command {
                         `git push --tag`,
                         dir
                     );
+
+                    if (this.publish) {
+                        await this.signed_exec(
+                            `GIT: [${dir}] Npm Publish...`,
+                            `npm publish`,
+                            dir
+                        );
+                    }
 
                     this.success(`GIT: [${dir}] Tag [${ver}] created!`);
                 }
