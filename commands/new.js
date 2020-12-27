@@ -21,9 +21,9 @@ module.exports = class TestCommand extends Command {
         ];
 
         let root_npm_packages = {
-            'bfg-cli': 'git@github.com:bfg-s/cli.git',
             'bfg-js': 'git@github.com:bfg-s/bfg-js.git',
             'bfg-node': 'git@github.com:bfg-s/node.git',
+            'bfg-cli': 'git@github.com:bfg-s/cli.git',
             'bfg-schema': 'git@github.com:bfg-s/schema.git',
             'bfg-vue': 'git@github.com:bfg-s/vue.git',
         };
