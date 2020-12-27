@@ -1,6 +1,6 @@
 {
   "name": "bfg-cli",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A control package by a group of packages.",
   "main": "app.js",
   "repository": "https://github.com/bfg-s/cli",
@@ -10,6 +10,9 @@
     "script",
     "cli"
   ],
+  "scripts": {
+    "publish": "bfg git:push && bfg git:tag -c -p"
+  },
   "author": "bfg",
   "license": "MIT",
   "bin": {
