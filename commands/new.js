@@ -88,15 +88,15 @@ module.exports = class TestCommand extends Command {
             );
             await Promise.all(Object.keys(root_npm_packages).map(async (p) => {
                 await this.signed_exec(
-                    `JS [${p}] Generation of a special link...`,
-                    `npm ln`, app.fs.base_path('bfg-js', p)
+                    `JS [${p}] Installing development environment dependencies...`,
+                    `npm install`,
+                    app.fs.base_path('bfg-js', p)
                 );
             }));
             await Promise.all(Object.keys(root_npm_packages).map(async (p) => {
                 await this.signed_exec(
-                    `JS [${p}] Installing development environment dependencies...`,
-                    `npm install`,
-                    app.fs.base_path('bfg-js', p)
+                    `JS [${p}] Generation of a special link...`,
+                    `npm ln`, app.fs.base_path('bfg-js', p)
                 );
             }));
             await Promise.all(Object.keys(root_npm_packages).map(async (p) => {
