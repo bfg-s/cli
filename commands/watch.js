@@ -33,6 +33,7 @@ module.exports = class TestCommand extends Command {
 
         app.chokidar.watch(app.fs.pwd, options)
             .on('all', (event, path, info) => {
+                //console.log(event, path);
                 Object.keys(this.watches).map((key) => {
                     let watches = this.watches[key];
                     let relative_path = path.replace(`${app.fs.pwd}/`, '');

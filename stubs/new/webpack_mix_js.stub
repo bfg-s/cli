@@ -1,6 +1,5 @@
 const mix = require('laravel-mix');
 require("laravel-mix-vue3");
-require('bfg-cli')('vue:watch');
 
 /*
  |--------------------------------------------------------------------------

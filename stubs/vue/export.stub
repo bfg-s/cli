@@ -1,0 +1,19 @@
+<template>
+    <div>[{camel_name}] Component</div>
+</template>
+
+<script>
+    export default {
+        name: "{camel_name}",
+        props: {},
+        data () {
+            return {
+
+            };
+        },
+        mounted () {},
+        computed: {},
+        watch: {},
+        methods: {}
+    }
+</script>

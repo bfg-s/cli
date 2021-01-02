@@ -71,11 +71,10 @@ module.exports = class TestCommand extends Command {
         app.fs.mkdir(app.fs.base_path('app/Components'));
 
         await this.put_stub('resources/js/app.js', 'resources_js_app_js');
-        await this.put_stub('resources/js/components.js', 'resources_js_components_js');
         await this.put_stub('webpack.mix.js', 'webpack_mix_js');
         await this.put_stub('tsconfig.json', 'tsconfig_json');
         await this.put_stub('app/Layouts/DefaultLayout.php', 'app_Layouts_DefaultLayout_php');
-        await this.put_stub('app/Http/Controllers/HomeController.php', 'app_Layouts_DefaultLayout_php');
+        await this.put_stub('app/Http/Controllers/HomeController.php', 'app_Http_Controllers_HomeController_php');
         await this.put_stub('routes/web.php', 'routes_web_php');
 
         if (this.root) {
