@@ -85,10 +85,12 @@ module.exports = class Command {
         return app.config.syntax in app.config.exts ? app.config.exts[app.config.syntax] : 'js';
     }
 
-    stub (file, params = {}) {
+    stub (file, params = {}, syntax = true) {
 
         file = Array.isArray(file) ? app.fs.path(...file) : file;
-        file += `/${app.config.syntax}.stub`;
+        if (syntax) {
+            file += `/${app.config.syntax}.stub`;
+        }
 
         if (!app.fs.is_file(file)) {
             app.die(`File template [${file}] not found!`);
@@ -96,6 +98,14 @@ module.exports = class Command {
 
         return app.str.replace_tags(
             app.fs.get_contents(file), params
+        );
+    }
+
+    async put_stub (file, stab, params = {}) {
+
+        return await app.fs.put_contents(
+            file,
+            this.stub([__dirname, '..', 'stubs', `${stab}.stub`, false], params)
         );
     }
 

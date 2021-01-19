@@ -70,16 +70,16 @@ module.exports = class TestCommand extends Command {
         app.fs.mkdir(app.fs.base_path('resources/js/components'));
         app.fs.mkdir(app.fs.base_path('app/Components'));
 
-        await this.put_stub('resources/js/app.js', 'resources_js_app_js');
-        await this.put_stub('webpack.mix.js', 'webpack_mix_js');
-        await this.put_stub('tsconfig.json', 'tsconfig_json');
-        await this.put_stub('app/Layouts/DefaultLayout.php', 'app_Layouts_DefaultLayout_php');
-        await this.put_stub('app/Http/Controllers/HomeController.php', 'app_Http_Controllers_HomeController_php');
-        await this.put_stub('routes/web.php', 'routes_web_php');
+        await this.put_stub('resources/js/app.js', 'new/resources_js_app_js');
+        await this.put_stub('webpack.mix.js', 'new/webpack_mix_js');
+        await this.put_stub('tsconfig.json', 'new/tsconfig_json');
+        await this.put_stub('app/Layouts/DefaultLayout.php', 'new/app_Layouts_DefaultLayout_php');
+        await this.put_stub('app/Http/Controllers/HomeController.php', 'new/app_Http_Controllers_HomeController_php');
+        await this.put_stub('routes/web.php', 'new/routes_web_php');
 
         if (this.root) {
 
-            await this.put_stub('bfg.json', 'bfg_json');
+            await this.put_stub('bfg.json', 'new/bfg_json');
 
             await this.signed_exec(
                 `Vendor link create...`,
@@ -109,10 +109,10 @@ module.exports = class TestCommand extends Command {
         this.info('Bfg project created!');
     }
 
-    async put_stub (file, stab) {
-        await app.fs.put_contents(
-            app.fs.base_path(file),
-            app.fs.get_contents(path.join(__dirname, '..', 'stubs', 'new', stab + ".stub"))
-        );
-    }
+    // async put_stub (file, stab) {
+    //     await app.fs.put_contents(
+    //         app.fs.base_path(file),
+    //         app.fs.get_contents(path.join(__dirname, '..', 'stubs', 'new', stab + ".stub"))
+    //     );
+    // }
 }

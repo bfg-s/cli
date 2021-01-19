@@ -2,8 +2,11 @@ module.exports = class MakeVue extends Command {
 
     get signature () {
 
+        this.component = null;
+
         return "make:vue " +
             "{name The name of the class} " +
+            "{component=? The name of the template component} " +
             "Create a new Bfg command";
     }
 
@@ -11,7 +14,7 @@ module.exports = class MakeVue extends Command {
 
         this.camel_name = app.str.camel(this.name, true);
         this.class_name = this.camel_name;
-        this.dir = app.fs.base_path();
+        this.dir = app.fs.base_path(app.config.vue.make.path);
         this.file = `${this.dir}/${this.class_name}.vue`;
 
         if (app.fs.is_file(this.file)) {
@@ -24,6 +27,7 @@ module.exports = class MakeVue extends Command {
             'description': this.description,
             'parameters': this.parameters ? ` ${this.parameters}` : '',
             'camel_name': this.camel_name,
+            'camel_name2': this.component ? this.component : this.camel_name,
             'class_name': this.class_name,
             'name': this.name,
             'dir': this.dir

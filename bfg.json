@@ -20,5 +20,16 @@
   "middleware_postfix": "Middleware",
   "middleware_path": "resources/js/middlewares",
   "command_postfix": "Command",
-  "command_path": "resources/js/commands"
+  "command_path": "resources/js/commands",
+  "vue": {
+    "make": {
+      "path": "/"
+    }
+  },
+  "project": {
+    "make": {
+      "path-php": "/",
+      "path-js": "/"
+    }
+  }
 }
