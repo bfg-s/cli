@@ -4,10 +4,10 @@ module.exports = class TestCommand extends Command {
 
     get signature () {
 
-        this.type = 'admin';
+        this.type = 'simple';
 
         return "new " +
-            "{type? Type of creation [default: admin][simple]} " +
+            "{type? Type of creation [default: simple][admin]} " +
             "{-r|--root? Create develop of bfg} " +
             "Project generator";
     }
@@ -17,7 +17,7 @@ module.exports = class TestCommand extends Command {
         let admin = this.type === 'admin';
 
         let composer_packages = [
-            'bfg/dev', 'bfg/entity', 'bfg/layout'
+            'bfg/dev', 'bfg/entity', 'bfg/layout', 'bfg/route', 'bfg/ui'
         ];
 
         let root_npm_packages = {
@@ -45,10 +45,6 @@ module.exports = class TestCommand extends Command {
             `Installing JavaScript dependencies....`,
             `npm install`
         );
-        await this.signed_exec(
-            `Installing VueJs3 components...`,
-            `npm install @types/webpack-env @vue/compiler-sfc vue-loader@next laravel-mix-vue3 --save-dev`
-        );
         if (!this.root) {
             await this.signed_exec(
                 `Installing and configuring BFG packages with npm...`,
@@ -72,7 +68,6 @@ module.exports = class TestCommand extends Command {
 
         await this.put_stub('resources/js/app.js', 'new/resources_js_app_js');
         await this.put_stub('webpack.mix.js', 'new/webpack_mix_js');
-        await this.put_stub('tsconfig.json', 'new/tsconfig_json');
         await this.put_stub('app/Layouts/DefaultLayout.php', 'new/app_Layouts_DefaultLayout_php');
         await this.put_stub('app/Http/Controllers/HomeController.php', 'new/app_Http_Controllers_HomeController_php');
         await this.put_stub('routes/web.php', 'new/routes_web_php');
@@ -104,6 +99,14 @@ module.exports = class TestCommand extends Command {
                     `npm ln ${p}`
                 );
             }));
+        }
+
+        if (admin) {
+
+            await this.signed_exec(
+                `Installing BFG Admin...`,
+                `php artisan admin:install -f`
+            );
         }
 
         this.info('Bfg project created!');

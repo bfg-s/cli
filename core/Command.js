@@ -88,7 +88,7 @@ module.exports = class Command {
     stub (file, params = {}, syntax = true) {
 
         file = Array.isArray(file) ? app.fs.path(...file) : file;
-        if (syntax) {
+        if (syntax && !app.fs.is_file(file)) {
             file += `/${app.config.syntax}.stub`;
         }
 
@@ -105,7 +105,7 @@ module.exports = class Command {
 
         return await app.fs.put_contents(
             file,
-            this.stub([__dirname, '..', 'stubs', `${stab}.stub`, false], params)
+            this.stub([__dirname, '..', 'stubs', `${stab}.stub`], params)
         );
     }
 

@@ -3,13 +3,19 @@ const app = require('bfg-js').app;
 app.vue = require('vue');
 
 app.register(require('bfg-schema').default);
+
 app.register(require('bfg-vue').default);
 
 app.provider({
+
     register () {
-        const context = require.context('./components', true, /^.*\.vue$/);
+
         app.bind('dev', process.env.NODE_ENV === 'development');
-        context.keys().forEach(file => this.app.components.new(context(file).default));
+
+        app.schema.context(
+            require.context('./components', true, /^.*\.vue$/)
+        );
+
         if (process.env.NODE_ENV === 'development') {
             app.execute('globalize');
         }
