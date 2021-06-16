@@ -34,6 +34,7 @@ module.exports = class TestCommand extends Command {
                     if (out.length) {
                         this.success(`GIT: [${dir}] Found last version [${ver}]`);
                         ver = ver.split('.');
+                        //console.log(app.obj);
                         ver[app.obj.last_key(ver)] =
                             app.num.isNumber(app.obj.last(ver)) ? (Number(app.obj.last(ver))+1) : 0;
                         ver = ver.join('.');
