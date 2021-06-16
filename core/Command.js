@@ -10,6 +10,7 @@ function promiseFromChildProcess(child, out = []) {
         child.stdout.on("data", (d) => out.push(d.trim().split(/\n/g)));
     }).catch((e) => {
         console.error(e);
+        process.exit(1);
     });
 }
 
