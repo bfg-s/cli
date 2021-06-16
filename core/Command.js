@@ -8,6 +8,8 @@ function promiseFromChildProcess(child, out = []) {
         child.addListener("error", reject);
         child.addListener("exit", resolve);
         child.stdout.on("data", (d) => out.push(d.trim().split(/\n/g)));
+    }).catch((e) => {
+        console.error(e);
     });
 }
 
