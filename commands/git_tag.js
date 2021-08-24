@@ -30,7 +30,7 @@ module.exports = class TestCommand extends Command {
                     if (!ans) { continue; }
 
                     out = await this.signed_exec(`GIT: [${dir}] Get last version...`, `git describe --abbrev=0 --tags`, dir);
-                    let ver = out.length ? app.obj.last(out) : '1.0.0';
+                    let ver = out.length ? app.obj.last(out) : '0.0.1';
                     if (out.length) {
                         this.success(`GIT: [${dir}] Found last version [${ver}]`);
                         ver = ver.split('.');

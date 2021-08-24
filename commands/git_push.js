@@ -4,7 +4,7 @@ module.exports = class GitPush extends Command {
         this.tag = false;
         return "git:push " +
             //"{-c|--current? Push only for current path} " +
-            //"{-t|--tag? Create for current path} " +
+            // "{-t|--tag? Create tag for current path} " +
             "Git auto push";
     }
 
@@ -20,7 +20,7 @@ module.exports = class GitPush extends Command {
 
                 let out = await this.signed_exec(`GIT: [${dir}] Get status...`, `git status`, dir);
 
-                if (out.join(",") !== 'On branch master,nothing to commit, working tree clean') {
+                if (!/.*nothing\sto\scommit.*/.test(out.join(","))) {
                     let comment = null;
                     out = await this.signed_exec(`GIT: [${dir}] Get file list...`, `git diff --name-only`, dir);
                     if (out.length) comment = out.join(", ");
